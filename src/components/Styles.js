@@ -1,3 +1,5 @@
+import green from "@material-ui/core/colors/green";
+
 const styles = theme => ({
   root: {},
   main: {
@@ -44,7 +46,31 @@ const styles = theme => ({
     fullWidth: true,
     display: "flex"
   },
-  formIcon: { width: 46, height: 46 }
+  formIcon: { width: 46, height: 46 },
+  line: {
+    display: "inline-flex",
+    verticalAlign: "bottom"
+  },
+  grow: {
+    flexGrow: 1
+  },
+  sectionDesktop: {
+    display: "none",
+    [theme.breakpoints.up("md")]: {
+      display: "flex"
+    }
+  },
+  control: {
+    padding: theme.spacing.unit * 2
+  },
+  buttonProgress: {
+    color: green[500],
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -12,
+    marginLeft: -12
+  }
 });
 
 export default styles;

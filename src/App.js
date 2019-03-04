@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import NavBar from "./components/NavBar";
 import LoginTab from "./components/LoginTab";
+import Timeline from "./components/Timeline";
+import Settings from "./components/Settings";
 import "./App.css";
 import AddToddlerTab from "./components/AddToddlerTab";
 import { MuiPickersUtilsProvider } from "material-ui-pickers";
@@ -21,12 +23,14 @@ class App extends Component {
     return (
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <NavBar />
-        {!this.state.loggedIn && (
+        {/*{!this.state.loggedIn && (
           <LoginTab handleLoginState={this.handleLoginState} />
         )}
         {this.state.loggedIn && !this.state.toddlerRegistered && (
           <AddToddlerTab />
-        )}
+        )} */}
+        {/* <Timeline /> */}
+        <Settings />
       </MuiPickersUtilsProvider>
     );
   }
