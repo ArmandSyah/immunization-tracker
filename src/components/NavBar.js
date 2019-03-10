@@ -3,13 +3,9 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
-import Badge from "@material-ui/core/Badge";
 import IconButton from "@material-ui/core/IconButton";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Timeline, Search, Settings } from "@material-ui/icons";
-
-import Icon from "@mdi/react";
-import { mdiPill, mdiClipboardPulse, mdiCalendar, mdiAccount } from "@mdi/js";
 
 import styles from "./Styles";
 

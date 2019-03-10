@@ -4,7 +4,6 @@ import {
   CssBaseline,
   Typography,
   Grid,
-  FormGroup,
   FormControlLabel,
   Checkbox,
   FormLabel,
@@ -13,9 +12,7 @@ import {
   Button,
   CircularProgress,
   Snackbar,
-  Paper,
-  SnackbarContent,
-  IconButton
+  Paper
 } from "@material-ui/core";
 
 import styles from "./Styles";
