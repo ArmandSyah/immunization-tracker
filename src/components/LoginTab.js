@@ -8,8 +8,6 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Grid from "@material-ui/core/Grid";
-import { InputAdornment } from "@material-ui/core";
-import { Email, Lock } from "@material-ui/icons";
 import Icon from "@mdi/react";
 import { mdiEmail, mdiLockQuestion } from "@mdi/js";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -17,6 +15,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import styles from "./Styles";
 
 const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i;
+const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 
 class LoginTab extends React.Component {
   state = {
@@ -24,34 +23,81 @@ class LoginTab extends React.Component {
     password: "",
     confirmedPassword: "",
     emailValid: false,
-    emailFocus: false
+    emailHelpMessage: "Enter a proper email address (ex: example@test.com)",
+    passwordValid: false,
+    passwordHelpMessage:
+      "Password must contain at least 8 characters minimum, 1 upper case, and at least 1 digit",
+    confirmedPasswordValid: false,
+    confirmedPasswordHelpMessage: "Re-enter your password"
   };
 
   handleEmailChange = e => {
-    let { emailValid } = this.state;
+    let { emailValid, emailHelpMessage } = this.state;
     const email = e.target.value;
 
     emailValid = emailRegex.test(email);
-    console.log(email);
-    console.log(emailValid);
 
-    this.setState({ email: email, emailValid: emailValid });
-  };
+    if (emailValid) {
+      emailHelpMessage = "Email is properly formatted";
+    } else {
+      emailHelpMessage = "Enter a proper email address (ex: example@test.com)";
+    }
 
-  handleEmailFocus = e => {
-    this.setState({ emailFocus: true });
-  };
-
-  handleEmailBlur = e => {
-    this.setState({ emailFocus: false });
+    this.setState({
+      email: email,
+      emailValid: emailValid,
+      emailHelpMessage: emailHelpMessage
+    });
   };
 
   handlePasswordChange = e => {
-    this.setState({ password: e.target.value });
+    let { passwordValid, passwordHelpMessage } = this.state;
+    const password = e.target.value;
+
+    passwordValid = passwordRegex.test(password);
+
+    if (passwordValid) {
+      passwordHelpMessage = "Password is valid";
+    } else {
+      if (password.length < 8) {
+        passwordHelpMessage =
+          "Password is currently less than the required 8 characters";
+      } else if (!/^(?=.*[A-Z])/.test(password)) {
+        passwordHelpMessage =
+          "Password does not contain the required 1 uppercase letter";
+      } else if (!/^(?=.*[0-9])/.test(password)) {
+        passwordHelpMessage = "Password does not contain the required 1 digit";
+      }
+    }
+
+    this.setState({
+      password: password,
+      passwordValid: passwordValid,
+      passwordHelpMessage: passwordHelpMessage
+    });
   };
 
   handleConfirmedPasswordChange = e => {
-    this.setState({ confirmedPassword: e.target.value });
+    let {
+      confirmedPasswordValid,
+      confirmedPasswordHelpMessage,
+      password
+    } = this.state;
+    const confirmedPassword = e.target.value;
+
+    confirmedPasswordValid = password === confirmedPassword;
+
+    if (confirmedPasswordValid) {
+      confirmedPasswordHelpMessage = "Passwords match";
+    } else {
+      confirmedPasswordHelpMessage = "Passwords do not match";
+    }
+
+    this.setState({
+      confirmedPassword: confirmedPassword,
+      confirmedPasswordValid: confirmedPasswordValid,
+      confirmedPasswordHelpMessage: confirmedPasswordHelpMessage
+    });
   };
 
   render() {
@@ -61,7 +107,14 @@ class LoginTab extends React.Component {
       password,
       confirmedPassword,
       emailValid,
-      emailFocus
+      emailFocus,
+      emailHelpMessage,
+      passwordValid,
+      passwordFocus,
+      passwordHelpMessage,
+      confirmedPasswordValid,
+      confirmedPasswordFocus,
+      confirmedPasswordHelpMessage
     } = this.state;
     return (
       <main className={classes.main}>
@@ -75,15 +128,7 @@ class LoginTab extends React.Component {
           </Typography>
 
           <form className={classes.form}>
-            <Grid
-              spacing={16}
-              container
-              alignItems={
-                !emailValid && email.length > 0 && !emailFocus
-                  ? "center"
-                  : "flex-end"
-              }
-            >
+            <Grid spacing={16} container alignItems={"center"}>
               <Grid item xs={1}>
                 <Icon path={mdiEmail} />
               </Grid>
@@ -93,23 +138,18 @@ class LoginTab extends React.Component {
                   name="email"
                   label="Enter Your Email Address"
                   margin="normal"
+                  variant="filled"
                   value={email}
                   onChange={this.handleEmailChange}
-                  onFocus={this.handleEmailFocus}
-                  onBlur={this.handleEmailBlur}
                   error={!emailValid && email.length > 0 && !emailFocus}
-                  helperText={
-                    !emailValid && email.length > 0 && !emailFocus
-                      ? "Enter a proper email address (ex: example@test.com)"
-                      : ""
-                  }
+                  helperText={emailHelpMessage}
                   fullWidth
                   required
                 />
               </Grid>
             </Grid>
 
-            <Grid container spacing={16} alignItems="flex-end">
+            <Grid container spacing={16} alignItems={"center"}>
               <Grid item xs={1}>
                 <Icon path={mdiLockQuestion} />
               </Grid>
@@ -117,17 +157,23 @@ class LoginTab extends React.Component {
                 <TextField
                   id="password"
                   name="password"
+                  type="password"
                   label="Enter Your Password"
                   margin="normal"
-                  value={this.state.password}
+                  variant="filled"
+                  value={password}
                   onChange={this.handlePasswordChange}
+                  error={
+                    !passwordValid && password.length > 0 && !passwordFocus
+                  }
+                  helperText={passwordHelpMessage}
                   fullWidth
                   required
                 />
               </Grid>
             </Grid>
 
-            <Grid container spacing={16} alignItems="flex-end">
+            <Grid container spacing={16} alignItems={"center"}>
               <Grid item xs={1}>
                 <Icon path={mdiLockQuestion} />
               </Grid>
@@ -137,8 +183,16 @@ class LoginTab extends React.Component {
                   name="confirmPassword"
                   label="Comfirm Your Password"
                   margin="normal"
-                  value={this.state.confirmedPassword}
+                  type="password"
+                  variant="filled"
+                  value={confirmedPassword}
                   onChange={this.handleConfirmedPasswordChange}
+                  error={
+                    !confirmedPasswordValid &&
+                    confirmedPassword.length > 0 &&
+                    !confirmedPasswordFocus
+                  }
+                  helperText={confirmedPasswordHelpMessage}
                   fullWidth
                   required
                 />
@@ -154,7 +208,9 @@ class LoginTab extends React.Component {
                 email.length === 0 ||
                 password.length === 0 ||
                 confirmedPassword.length === 0 ||
-                !emailValid
+                !emailValid ||
+                !passwordValid ||
+                !confirmedPasswordValid
               }
               onClick={this.props.handleLoginState}
               className={classes.submit}

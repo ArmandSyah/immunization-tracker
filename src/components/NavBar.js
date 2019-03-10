@@ -1,6 +1,7 @@
 import React from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
+import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import Badge from "@material-ui/core/Badge";
 import IconButton from "@material-ui/core/IconButton";
@@ -14,27 +15,46 @@ import styles from "./Styles";
 
 class NavBar extends React.Component {
   render() {
-    const { classes } = this.props;
+    const { classes, handleCurrentPageChange, revealIcons } = this.props;
     return (
       <div>
-        <AppBar position="static">
+        <AppBar position="static" color="primary">
           <Toolbar>
             <Typography variant="title" color="inherit">
               Immunization Tracker For Toddlers
             </Typography>
 
             <div className={classes.grow} />
-            <div className={classes.sectionDesktop}>
-              <IconButton color="inherit">
-                <Timeline />
-              </IconButton>
-              <IconButton color="inherit">
-                <Search />
-              </IconButton>
-              <IconButton color="inherit">
-                <Settings />
-              </IconButton>
-            </div>
+            {revealIcons && (
+              <div className={classes.sectionDesktop}>
+                <Tooltip title="Timeline">
+                  <IconButton
+                    color="inherit"
+                    onClick={handleCurrentPageChange("Timeline")}
+                  >
+                    <Timeline />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Search">
+                  <IconButton
+                    color="inherit"
+                    onClick={handleCurrentPageChange("Search")}
+                  >
+                    <Search />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Settings">
+                  <IconButton
+                    color="inherit"
+                    onClick={handleCurrentPageChange("Settings")}
+                  >
+                    <Settings />
+                  </IconButton>
+                </Tooltip>
+              </div>
+            )}
           </Toolbar>
         </AppBar>
       </div>

@@ -1,5 +1,4 @@
 import React from "react";
-import classNames from "classnames";
 import {
   withStyles,
   CssBaseline,
@@ -18,98 +17,36 @@ import {
   SnackbarContent,
   IconButton
 } from "@material-ui/core";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import ErrorIcon from "@material-ui/icons/Error";
-import InfoIcon from "@material-ui/icons/Info";
-import CloseIcon from "@material-ui/icons/Close";
-import WarningIcon from "@material-ui/icons/Warning";
-
-import green from "@material-ui/core/colors/green";
-import amber from "@material-ui/core/colors/amber";
 
 import styles from "./Styles";
-
-const variantIcon = {
-  success: CheckCircleIcon,
-  warning: WarningIcon,
-  error: ErrorIcon,
-  info: InfoIcon
-};
-
-const snackbarStyles = theme => ({
-  success: {
-    backgroundColor: green[600]
-  },
-  error: {
-    backgroundColor: theme.palette.error.dark
-  },
-  info: {
-    backgroundColor: theme.palette.primary.dark
-  },
-  warning: {
-    backgroundColor: amber[700]
-  },
-  icon: {
-    fontSize: 20
-  },
-  iconVariant: {
-    opacity: 0.9,
-    marginRight: theme.spacing.unit
-  },
-  message: {
-    display: "flex",
-    alignItems: "center"
-  }
-});
-
-const MySnackbarContent = props => {
-  const { classes, className, message, onClose, variant, ...other } = props;
-  const Icon = variantIcon[variant];
-
-  return (
-    <SnackbarContent
-      className={classNames(classes[variant], className)}
-      aria-describedby="client-snackbar"
-      message={
-        <span id="client-snackbar" className={classes.message}>
-          <Icon className={classNames(classes.icon, classes.iconVariant)} />
-          {message}
-        </span>
-      }
-      action={[
-        <IconButton
-          key="close"
-          aria-label="Close"
-          color="inherit"
-          className={classes.close}
-          onClick={onClose}
-        >
-          <CloseIcon className={classes.icon} />
-        </IconButton>
-      ]}
-      {...other}
-    />
-  );
-};
-
-const MySnackbarContentWrapper = withStyles(snackbarStyles)(MySnackbarContent);
+import MySnackbarContent from "./MySnackbarContent";
 
 class Settings extends React.Component {
   state = {
-    checkedEmail: false,
+    checkedEmail: true,
     checkedText: false,
     value: "DaysBefore",
     loading: false,
     success: false,
-    open: false
+    open: false,
+    missingChecked: false
   };
 
   componentWillUnmount() {
     clearTimeout(this.timer);
   }
 
-  handleButtonClick = () => {
-    if (!this.state.loading) {
+  handleButtonClick = event => {
+    event.preventDefault();
+    this.setState({ open: false, missingChecked: false });
+    const { loading, checkedEmail, checkedText } = this.state;
+
+    if (!checkedEmail && !checkedText) {
+      this.setState({ missingChecked: true, open: true });
+      return;
+    }
+
+    if (!loading) {
       this.setState(
         {
           success: false,
@@ -141,10 +78,11 @@ class Settings extends React.Component {
       return;
     }
 
-    this.setState({ open: false });
+    this.setState({ open: false, missingChecked: false });
   };
 
   render() {
+    const { missingChecked } = this.state;
     const { classes } = this.props;
     return (
       <main className={classes.main}>
@@ -240,21 +178,41 @@ class Settings extends React.Component {
               )}
             </div>
 
-            <Snackbar
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left"
-              }}
-              open={this.state.open}
-              autoHideDuration={6000}
-              onClose={this.handleClose}
-            >
-              <MySnackbarContentWrapper
+            {!missingChecked && (
+              <Snackbar
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left"
+                }}
+                open={this.state.open}
+                autoHideDuration={2000}
                 onClose={this.handleClose}
-                variant="success"
-                message="Settings have been saved"
-              />
-            </Snackbar>
+              >
+                <MySnackbarContent
+                  onClose={this.handleClose}
+                  variant="success"
+                  message="Settings have been saved"
+                />
+              </Snackbar>
+            )}
+
+            {missingChecked && (
+              <Snackbar
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left"
+                }}
+                open={this.state.open}
+                autoHideDuration={2000}
+                onClose={this.handleClose}
+              >
+                <MySnackbarContent
+                  onClose={this.handleClose}
+                  variant="error"
+                  message="You must check at least 1 way to receive notifications"
+                />
+              </Snackbar>
+            )}
           </form>
         </Paper>
       </main>

@@ -5,17 +5,8 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import Paper from "@material-ui/core/Paper";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
-import {
-  TextField,
-  Button,
-  MenuItem,
-  Select,
-  InputLabel,
-  Input,
-  FormControl,
-  Chip
-} from "@material-ui/core";
-import { Person, Face, DateRange } from "@material-ui/icons";
+import { TextField, Button } from "@material-ui/core";
+import { Face } from "@material-ui/icons";
 import { DatePicker } from "material-ui-pickers";
 import Icon from "@mdi/react";
 import { mdiPill, mdiClipboardPulse, mdiCalendar, mdiAccount } from "@mdi/js";
@@ -23,26 +14,12 @@ import Grid from "@material-ui/core/Grid";
 
 import styles from "./Styles";
 
-const medicationList = ["A", "B", "C"];
-const healthConcernsList = ["A", "B", "C", "D"];
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
-    }
-  }
-};
-
 class AddToddlerTab extends React.Component {
   state = {
     name: "",
     selectedDate: null,
-    medications: [],
-    healthConcerns: []
+    medications: "",
+    healthConcerns: ""
   };
 
   handleNameChange = event => {
@@ -62,7 +39,7 @@ class AddToddlerTab extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, handleToddlerRegisterState } = this.props;
     const { name, selectedDate, medications, healthConcerns } = this.state;
     return (
       <main className={classes.main}>
@@ -103,15 +80,34 @@ class AddToddlerTab extends React.Component {
               <Grid item xs={11}>
                 <DatePicker
                   label="Date of birth"
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   openTo="year"
                   value={selectedDate}
                   onChange={this.handleDateChange}
                   views={["year", "month", "day"]}
+                  placeholder="MM/dd/yyyy"
+                  mask={value =>
+                    // handle clearing outside if value can be changed outside of the component
+                    value
+                      ? [
+                          /\d/,
+                          /\d/,
+                          "/",
+                          /\d/,
+                          /\d/,
+                          "/",
+                          /\d/,
+                          /\d/,
+                          /\d/,
+                          /\d/
+                        ]
+                      : []
+                  }
                   clearable
                   disableFuture
                   fullWidth
                   required
+                  keyboard
                 />
               </Grid>
             </Grid>
@@ -121,35 +117,15 @@ class AddToddlerTab extends React.Component {
                 <Icon path={mdiPill} />
               </Grid>
               <Grid item xs={11}>
-                <FormControl className={classes.formControl}>
-                  <InputLabel htmlFor="select-multiple" required>
-                    Medications Taken
-                  </InputLabel>
-                  <Select
-                    value={medications}
-                    onChange={this.handleMedicationsChange}
-                    input={<Input id="select-multiple" />}
-                    renderValue={selected => (
-                      <div className={classes.chips}>
-                        {selected.map(value => (
-                          <Chip
-                            key={value}
-                            label={value}
-                            className={classes.chip}
-                          />
-                        ))}
-                      </div>
-                    )}
-                    MenuProps={MenuProps}
-                    multiple
-                  >
-                    {medicationList.map(medication => (
-                      <MenuItem key={medication} value={medication}>
-                        {medication}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <TextField
+                  name="medication"
+                  label="Enter Medications Taken"
+                  margin="normal"
+                  value={medications}
+                  onChange={this.handleMedicationsChange}
+                  fullWidth
+                  required
+                />
               </Grid>
             </Grid>
 
@@ -158,35 +134,15 @@ class AddToddlerTab extends React.Component {
                 <Icon path={mdiClipboardPulse} />
               </Grid>
               <Grid item xs={11}>
-                <FormControl className={classes.formControl}>
-                  <InputLabel htmlFor="select-multiple" required>
-                    Health Concerns
-                  </InputLabel>
-                  <Select
-                    value={healthConcerns}
-                    onChange={this.handleHealthConcerns}
-                    input={<Input id="select-multiple" />}
-                    renderValue={selected => (
-                      <div className={classes.chips}>
-                        {selected.map(value => (
-                          <Chip
-                            key={value}
-                            label={value}
-                            className={classes.chip}
-                          />
-                        ))}
-                      </div>
-                    )}
-                    MenuProps={MenuProps}
-                    multiple
-                  >
-                    {healthConcernsList.map(healthConcerns => (
-                      <MenuItem key={healthConcerns} value={healthConcerns}>
-                        {healthConcerns}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <TextField
+                  name="medication"
+                  label="Enter Medications Taken"
+                  margin="normal"
+                  value={healthConcerns}
+                  onChange={this.handleHealthConcerns}
+                  fullWidth
+                  required
+                />
               </Grid>
             </Grid>
 
@@ -196,6 +152,13 @@ class AddToddlerTab extends React.Component {
               variant="contained"
               color="primary"
               className={classes.submit}
+              disabled={
+                healthConcerns.length === 0 ||
+                name.length === 0 ||
+                medications === 0 ||
+                selectedDate === null
+              }
+              onClick={handleToddlerRegisterState(name, selectedDate)}
             >
               Submit Toddler Information
             </Button>
