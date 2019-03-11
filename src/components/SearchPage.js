@@ -16,7 +16,8 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
-  Avatar
+  Avatar,
+  Paper
 } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
 
@@ -39,21 +40,56 @@ const vaccines = [
     sideEffects:
       "Decreased Urination, Frequent Thirst, Dry Mouth and Throat, Dizziness",
     description:
-      "This vaccine is used to prevent a certain virus infection (rotavirus) in infants and young children. Rotavirus can cause fever, vomiting, and diarrhea. Although nearly all children become infected with this virus before they are 5 years old, some severe cases can lead to a dangerous (rarely fatal) loss of body fluids (dehydration). Most severe cases occur in children between 6 to 24 months old. This vaccine helps the body produce immunity (protection) to prevent infection with rotavirus or to lessen the severity of an infection."
+      "This vaccine is used to prevent a certain virus infection (rotavirus) in infants and young children. Rotavirus can cause fever, vomiting, and diarrhea. Although nearly all children become infected with this virus before they are 5 years old, some severe cases can lead to a dangerous (rarely fatal) loss of body fluids (dehydration). Most severe cases occur in children between 6 to 24 months old. This vaccine helps the body produce immunity (protection) to prevent infection with rotavirus or to lessen the severity of an infection.",
+    note: ""
   },
   {
     name: "Rotateq",
     disease: "Rotavirus",
     sideEffects: "Mild Fever, Diarrhea, Vomiting",
     description:
-      "This vaccine is used to prevent a certain virus infection (rotavirus) in infants and young children. Rotavirus can cause fever, vomiting, and diarrhea. Although nearly all children become infected with this virus before they are 5 years old, some severe cases can lead to a dangerous (rarely fatal) loss of body fluids (dehydration). Most severe cases occur in children between 6 to 24 months old. This vaccine helps the body produce immunity (protection) to prevent infection with rotavirus or to lessen the severity of an infection."
+      "This vaccine is used to prevent a certain virus infection (rotavirus) in infants and young children. Rotavirus can cause fever, vomiting, and diarrhea. Although nearly all children become infected with this virus before they are 5 years old, some severe cases can lead to a dangerous (rarely fatal) loss of body fluids (dehydration). Most severe cases occur in children between 6 to 24 months old. This vaccine helps the body produce immunity (protection) to prevent infection with rotavirus or to lessen the severity of an infection.",
+    note: ""
   },
   {
     name: "Varivax",
     disease: "Chickenpox",
     sideEffects: "Pain, Fever, Rash, Itching",
     description:
-      "This medication is used to help prevent varicella virus infection (commonly known as chickenpox). Chickenpox is a common childhood illness, but can cause more serious illnesses in people who have not yet had either chickenpox or this vaccine. Serious (rarely fatal) problems (such as pneumonia and inflammation of the liver or brain) may rarely occur from this infection, and first-time infections in adults may be very severe. It may also cause a very serious brain/liver condition called Reyes syndrome in children or teenagers. If you are infected while pregnant, your unborn infant may be harmed. Vaccination during childhood may help prevent this infection and the problems that can occur. The virus in this vaccine is alive, but it has been weakened (attenuated) and therefore has a decreased ability to cause illness. It works by helping the body produce immunity (protection) that will prevent you from getting chickenpox, or will lessen the seriousness of the infection. As with any vaccine, it may not fully protect everyone who receives it."
+      "This medication is used to help prevent varicella virus infection (commonly known as chickenpox). Chickenpox is a common childhood illness, but can cause more serious illnesses in people who have not yet had either chickenpox or this vaccine. Serious (rarely fatal) problems (such as pneumonia and inflammation of the liver or brain) may rarely occur from this infection, and first-time infections in adults may be very severe. It may also cause a very serious brain/liver condition called Reyes syndrome in children or teenagers. If you are infected while pregnant, your unborn infant may be harmed. Vaccination during childhood may help prevent this infection and the problems that can occur. The virus in this vaccine is alive, but it has been weakened (attenuated) and therefore has a decreased ability to cause illness. It works by helping the body produce immunity (protection) that will prevent you from getting chickenpox, or will lessen the seriousness of the infection. As with any vaccine, it may not fully protect everyone who receives it.",
+    note: ""
+  },
+  {
+    name: "DTaP",
+    disease: "Diphtheria, Tetanus, Pertusis",
+    sideEffects: "Pain, swelling, fever, upset stomach",
+    description:
+      "DTaP is a vaccine that helps children younger than age 7 develop immunity to three deadly diseases caused by bacteria: diphtheria, tetanus, and whooping cough (pertussis).",
+    note: ""
+  },
+  {
+    name: "Prevnar 13",
+    disease: "Pneumococcal Conjugate",
+    sideEffects: "Decreased Appetite, Diarrhea, Drowsiness",
+    description:
+      "The pneumococcal vaccine increases a person's defences against infection with pneumococcal bacteria by introducing very small amounts of bacterial components (not live bacteria) into the bloodstream.",
+    note: ""
+  },
+  {
+    name: "Meningococcal vaccine",
+    disease: "Meningitits",
+    sideEffects: "Soreness, Reddness, Dizziness, Upset Stomach",
+    description:
+      "The Men-C-C vaccine protects against meningococcal disease, type C.",
+    note: ""
+  },
+  {
+    name: "MMR vaccine",
+    disease: "Measles, Mumps, Rubella",
+    sideEffects: "Fever, Rash",
+    description:
+      "The MMR vaccine is a three-in-one needle that protects against measles, mumps and rubella (German measles). It should be given to children soon after their first birthday.",
+    note: ""
   }
 ];
 
@@ -113,12 +149,13 @@ class SearchResult extends React.Component {
   constructor(props) {
     super(props);
     const { vaccine } = this.props;
-    const { description, sideEffects } = vaccine;
+    const { description, sideEffects, note } = vaccine;
     this.state = {
       modalOpen: false,
       updated: false,
       currentDescription: description,
       currentSideEffects: sideEffects,
+      currentNote: note,
       ...vaccine
     };
   }
@@ -128,11 +165,12 @@ class SearchResult extends React.Component {
   };
 
   handleModalClose = () => {
-    const { description, sideEffects } = this.state;
+    const { description, sideEffects, note } = this.state;
     this.setState({
       modalOpen: false,
       currentDescription: description,
-      sideEffects: sideEffects
+      currentSideEffects: sideEffects,
+      currentNote: note
     });
   };
 
@@ -144,12 +182,17 @@ class SearchResult extends React.Component {
     this.setState({ currentSideEffects: event.target.value });
   };
 
+  handleNoteOnChange = event => {
+    this.setState({ currentNote: event.target.value });
+  };
+
   handleModalUpdate = () => {
-    const { currentDescription, currentSideEffects } = this.state;
+    const { currentDescription, currentSideEffects, currentNote } = this.state;
     const { handleUpdateSuccessful } = this.props;
     this.setState({
       description: currentDescription,
       sideEffects: currentSideEffects,
+      note: currentNote,
       modalOpen: false
     });
     handleUpdateSuccessful();
@@ -163,8 +206,10 @@ class SearchResult extends React.Component {
       disease,
       sideEffects,
       description,
+      note,
       currentDescription,
-      currentSideEffects
+      currentSideEffects,
+      currentNote
     } = this.state;
     return (
       <VerticalTimelineElement
@@ -190,6 +235,8 @@ class SearchResult extends React.Component {
         <p>{description}</p>
         <h3>Side Effects include</h3>
         <p>{sideEffects}</p>
+        <h3>Notes</h3>
+        <p>{note}</p>
         <Modal
           open={modalOpen}
           onClose={this.handleModalClose}
@@ -217,6 +264,7 @@ class SearchResult extends React.Component {
               </span>
               <Typography variant="subtitle1">{`Vaccine Name: ${name}`}</Typography>
               <Typography variant="subtitle1">{`Disease: ${disease}`}</Typography>
+
               <Typography variant="subtitle1">Description</Typography>
               <TextField
                 id="outlined-multiline-static"
@@ -225,6 +273,12 @@ class SearchResult extends React.Component {
                 defaultValue="Default Value"
                 margin="normal"
                 variant="filled"
+                error={currentDescription.length === 0}
+                helperText={
+                  currentDescription.length === 0
+                    ? "Fill in description, do not leave empty"
+                    : ""
+                }
                 value={currentDescription}
                 onChange={this.handleDescriptionOnChange}
                 fullWidth
@@ -237,8 +291,25 @@ class SearchResult extends React.Component {
                 defaultValue="Default Value"
                 margin="normal"
                 variant="filled"
+                error={currentSideEffects.length === 0}
+                helperText={
+                  currentSideEffects.length === 0
+                    ? "Fill in description, do not leave empty"
+                    : ""
+                }
                 value={currentSideEffects}
                 onChange={this.handleSideEffectsOnChange}
+                fullWidth
+              />
+
+              <Typography variant="subtitle1">Note</Typography>
+              <TextField
+                id="outlined-multiline-static"
+                label="Edit Note"
+                margin="normal"
+                variant="filled"
+                value={currentNote}
+                onChange={this.handleNoteOnChange}
                 fullWidth
               />
               <div
@@ -252,6 +323,10 @@ class SearchResult extends React.Component {
                   variant="contained"
                   className={classes.button}
                   onClick={this.handleModalUpdate}
+                  disabled={
+                    currentSideEffects.length === 0 ||
+                    currentDescription.length === 0
+                  }
                   color="primary"
                 >
                   Update
@@ -320,10 +395,10 @@ class SearchPage extends React.Component {
     const foundVaccines =
       searchType === "Vaccination"
         ? vaccines.filter(vaccine =>
-            vaccine.name.toLowerCase().startsWith(searchValue.toLowerCase())
+            vaccine.name.toLowerCase().includes(searchValue.toLowerCase())
           )
         : vaccines.filter(vaccine =>
-            vaccine.disease.toLowerCase().startsWith(searchValue.toLowerCase())
+            vaccine.disease.toLowerCase().includes(searchValue.toLowerCase())
           );
     this.setState({ foundVaccines, searchClicked: true, firstSearch: false });
   };
@@ -366,66 +441,68 @@ class SearchPage extends React.Component {
     return (
       <main className={classes.main}>
         <CssBaseline />
-        <div style={{ paddingTop: "30px" }}>
-          <Typography component="h1" variant="h2" align="center">
-            Vaccine Search
-          </Typography>
-          <form className={classes.form}>
-            <TextField
-              id="search-field"
-              variant="filled"
-              label="Search"
-              type="text"
-              fullWidth
-              value={searchValue}
-              onChange={this.handleSearchOnChange}
-              onKeyPress={this.handleKeyPress}
-              error={searchEmpty}
-              helperText={
-                searchEmpty ? "Please type a query into the search bar" : ""
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={this.handleSearchOnClick}>
-                      <Search />
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-            />
-            <Grid
-              container
-              className={classes.control}
-              justify="flex-start"
-              direction="row"
-            >
-              <Grid item xs={12}>
-                <FormLabel>Search By</FormLabel>
-                <RadioGroup
-                  aria-label="NotificationFrequency"
-                  name="searchType"
-                  className={classes.group}
-                  onChange={this.handleRadioChange}
-                  value={searchType}
-                  disabled={loading}
-                  row={true}
-                >
-                  <FormControlLabel
-                    value="Vaccination"
-                    control={<Radio disabled={loading} />}
-                    label="Vaccination"
-                  />
-                  <FormControlLabel
-                    value="Disease"
-                    control={<Radio disabled={loading} />}
-                    label="Disease"
-                  />
-                </RadioGroup>
+        <Paper className={classes.paper}>
+          <div style={{ paddingTop: "30px" }}>
+            <Typography component="h1" variant="h2" align="center">
+              Vaccine Search
+            </Typography>
+            <form className={classes.form}>
+              <TextField
+                id="search-field"
+                variant="filled"
+                label="Search"
+                type="text"
+                fullWidth
+                value={searchValue}
+                onChange={this.handleSearchOnChange}
+                onKeyPress={this.handleKeyPress}
+                error={searchEmpty}
+                helperText={
+                  searchEmpty ? "Please type a query into the search bar" : ""
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={this.handleSearchOnClick}>
+                        <Search />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <Grid
+                container
+                className={classes.control}
+                justify="flex-start"
+                direction="row"
+              >
+                <Grid item xs={12}>
+                  <FormLabel>Search By</FormLabel>
+                  <RadioGroup
+                    aria-label="NotificationFrequency"
+                    name="searchType"
+                    className={classes.group}
+                    onChange={this.handleRadioChange}
+                    value={searchType}
+                    disabled={loading}
+                    row={true}
+                  >
+                    <FormControlLabel
+                      value="Vaccination"
+                      control={<Radio disabled={loading} />}
+                      label="Vaccination"
+                    />
+                    <FormControlLabel
+                      value="Disease"
+                      control={<Radio disabled={loading} />}
+                      label="Disease"
+                    />
+                  </RadioGroup>
+                </Grid>
               </Grid>
-            </Grid>
-          </form>
-        </div>
+            </form>
+          </div>
+        </Paper>
         <div>
           {loading && (
             <CircularProgress size={24} className={classes.buttonProgress} />

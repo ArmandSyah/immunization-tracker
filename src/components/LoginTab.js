@@ -23,12 +23,12 @@ class LoginTab extends React.Component {
     password: "",
     confirmedPassword: "",
     emailValid: false,
-    emailHelpMessage: "Enter a proper email address (ex: example@test.com)",
+    emailHelpMessage: "Type in a proper email address (ex: example@test.com)",
     passwordValid: false,
     passwordHelpMessage:
       "Password must contain at least 8 characters minimum, 1 upper case, and at least 1 digit",
     confirmedPasswordValid: false,
-    confirmedPasswordHelpMessage: "Re-enter your password"
+    confirmedPasswordHelpMessage: "Re-type your password"
   };
 
   handleEmailChange = e => {
@@ -40,7 +40,7 @@ class LoginTab extends React.Component {
     if (emailValid) {
       emailHelpMessage = "Email is properly formatted";
     } else {
-      emailHelpMessage = "Enter a proper email address (ex: example@test.com)";
+      emailHelpMessage = "Type a proper email address (ex: example@test.com)";
     }
 
     this.setState({
@@ -48,6 +48,14 @@ class LoginTab extends React.Component {
       emailValid: emailValid,
       emailHelpMessage: emailHelpMessage
     });
+  };
+
+  handleEmailFocus = e => {
+    this.setState({ emailFocus: true });
+  };
+
+  handleEmailBlur = e => {
+    this.setState({ emailFocus: false });
   };
 
   handlePasswordChange = e => {
@@ -77,6 +85,14 @@ class LoginTab extends React.Component {
     });
   };
 
+  handlePasswordFocus = e => {
+    this.setState({ passwordFocus: true });
+  };
+
+  handlePasswordBlur = e => {
+    this.setState({ passwordFocus: false });
+  };
+
   handleConfirmedPasswordChange = e => {
     let {
       confirmedPasswordValid,
@@ -98,6 +114,14 @@ class LoginTab extends React.Component {
       confirmedPasswordValid: confirmedPasswordValid,
       confirmedPasswordHelpMessage: confirmedPasswordHelpMessage
     });
+  };
+
+  handleConfirmedPasswordFocus = e => {
+    this.setState({ confirmedPasswordFocus: true });
+  };
+
+  handleConfirmedPasswordBlur = e => {
+    this.setState({ confirmedPasswordFocus: false });
   };
 
   render() {
@@ -141,6 +165,8 @@ class LoginTab extends React.Component {
                   variant="filled"
                   value={email}
                   onChange={this.handleEmailChange}
+                  onFocus={this.handleEmailFocus}
+                  onBlur={this.handleEmailBlur}
                   error={!emailValid && email.length > 0 && !emailFocus}
                   helperText={emailHelpMessage}
                   fullWidth
@@ -163,6 +189,8 @@ class LoginTab extends React.Component {
                   variant="filled"
                   value={password}
                   onChange={this.handlePasswordChange}
+                  onFocus={this.handlePasswordFocus}
+                  onBlur={this.handlePasswordBlur}
                   error={
                     !passwordValid && password.length > 0 && !passwordFocus
                   }
@@ -187,6 +215,8 @@ class LoginTab extends React.Component {
                   variant="filled"
                   value={confirmedPassword}
                   onChange={this.handleConfirmedPasswordChange}
+                  onFocus={this.handleConfirmedPasswordFocus}
+                  onBlur={this.handleConfirmedPasswordBlur}
                   error={
                     !confirmedPasswordValid &&
                     confirmedPassword.length > 0 &&

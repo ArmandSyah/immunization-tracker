@@ -32,8 +32,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loggedIn: true,
-      toddlerRegistered: true,
+      loggedIn: false,
+      toddlerRegistered: false,
       currentPage: "Timeline",
       name: "John Smith",
       dateOfBirth: new Date()
@@ -59,6 +59,16 @@ class App extends Component {
     this.setState({ currentPage: pageName });
   };
 
+  handleSignout = event => {
+    this.setState({
+      loggedIn: false,
+      toddlerRegistered: false,
+      currentPage: "Timeline",
+      name: "John Smith",
+      dateOfBirth: new Date()
+    });
+  };
+
   render() {
     const {
       loggedIn,
@@ -72,6 +82,7 @@ class App extends Component {
         <MuiThemeProvider theme={theme}>
           <NavBar
             handleCurrentPageChange={this.handleCurrentPageChange}
+            handleSignout={this.handleSignout}
             revealIcons={loggedIn && toddlerRegistered}
           />
           {!loggedIn && <LoginTab handleLoginState={this.handleLoginState} />}

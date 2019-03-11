@@ -158,7 +158,6 @@ class TimelineAddModal extends React.Component {
               disablePast
               fullWidth
               required
-              keyboard
             />
             <div
               style={{

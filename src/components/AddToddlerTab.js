@@ -17,13 +17,47 @@ import styles from "./Styles";
 class AddToddlerTab extends React.Component {
   state = {
     name: "",
+    nameValid: false,
+    nameHelpMessage: "Type in your toddler's name",
+    nameFocus: false,
+    nameFirstShow: true,
     selectedDate: null,
+    dateValid: false,
+    dateHelpMessage:
+      "Type in your toddler's date of birth in the following format: MM/dd/yyyy",
     medications: "",
-    healthConcerns: ""
+    medicationsValid: false,
+    medicationHelpMessage:
+      "Type in the medication your toddler is currently on",
+    medicationFirstShow: true,
+    healthConcerns: "",
+    healthConcernsValid: false,
+    healthConcernsHelpMessage:
+      "Type any other health concerns your toddler has",
+    healthConcernsFirstShow: true
   };
 
   handleNameChange = event => {
-    this.setState({ name: event.target.value });
+    let { nameValid, nameHelpMessage, nameFirstShow } = this.state;
+    if (nameFirstShow) {
+      this.setState({ nameFirstShow: false });
+    }
+    const name = event.target.value;
+
+    nameValid = name.length > 0;
+    nameHelpMessage = nameValid
+      ? "Toddler name field has been filled"
+      : "Do not leave toddler name field empty";
+
+    this.setState({ name, nameValid, nameHelpMessage });
+  };
+
+  handleNameFocus = e => {
+    this.setState({ nameFocus: true });
+  };
+
+  handleNameBlur = e => {
+    this.setState({ nameFocus: false });
   };
 
   handleDateChange = date => {
@@ -31,16 +65,83 @@ class AddToddlerTab extends React.Component {
   };
 
   handleMedicationsChange = event => {
-    this.setState({ medications: event.target.value });
+    let {
+      medicationsValid,
+      medicationHelpMessage,
+      medicationFirstShow
+    } = this.state;
+    if (medicationFirstShow) {
+      this.setState({ medicationFirstShow: false });
+    }
+    const medications = event.target.value;
+
+    medicationsValid = medications.length > 0;
+    medicationHelpMessage = medicationsValid
+      ? "Medications field has been filled"
+      : "Do not leave medication field empty";
+
+    this.setState({ medications, medicationsValid, medicationHelpMessage });
+  };
+
+  handleMedicationFocus = e => {
+    this.setState({ medicationFocus: true });
+  };
+
+  handleMedicationBlur = e => {
+    this.setState({ medicationFocus: false });
   };
 
   handleHealthConcerns = event => {
-    this.setState({ healthConcerns: event.target.value });
+    let {
+      healthConcernsValid,
+      healthConcernsHelpMessage,
+      healthConcernsFirstShow
+    } = this.state;
+    if (healthConcernsFirstShow) {
+      this.setState({ healthConcernsFirstShow: false });
+    }
+    const healthConcerns = event.target.value;
+
+    healthConcernsValid = healthConcerns.length > 0;
+    healthConcernsHelpMessage = healthConcernsValid
+      ? "Health concerns field has been filled"
+      : "Do not leave Health concerns field empty";
+
+    this.setState({
+      healthConcerns,
+      healthConcernsValid,
+      healthConcernsHelpMessage
+    });
+  };
+
+  handleHealthConcernsFocus = e => {
+    this.setState({ healthConcernsFocus: true });
+  };
+
+  handleHealthConcernsBlur = e => {
+    this.setState({ healthConcernsFocus: false });
   };
 
   render() {
     const { classes, handleToddlerRegisterState } = this.props;
-    const { name, selectedDate, medications, healthConcerns } = this.state;
+    const {
+      name,
+      nameValid,
+      nameFocus,
+      nameFirstShow,
+      nameHelpMessage,
+      selectedDate,
+      medications,
+      medicationsValid,
+      medicationFocus,
+      medicationFirstShow,
+      medicationHelpMessage,
+      healthConcerns,
+      healthConcernsValid,
+      healthConcernsFocus,
+      healthConcernsFirstShow,
+      healthConcernsHelpMessage
+    } = this.state;
     return (
       <main className={classes.main}>
         <CssBaseline />
@@ -54,7 +155,7 @@ class AddToddlerTab extends React.Component {
           </Typography>
 
           <form className={classes.form}>
-            <Grid spacing={16} container alignItems="flex-end">
+            <Grid spacing={16} container alignItems="center">
               <Grid item xs={1}>
                 <Icon path={mdiAccount} />
               </Grid>
@@ -64,8 +165,18 @@ class AddToddlerTab extends React.Component {
                   name="email"
                   label="Enter Name"
                   margin="normal"
+                  variant="filled"
                   value={name}
                   onChange={this.handleNameChange}
+                  onFocus={this.handleNameFocus}
+                  onBlur={this.handleNameBlur}
+                  error={
+                    !nameValid &&
+                    name.length === 0 &&
+                    !nameFocus &&
+                    !nameFirstShow
+                  }
+                  helperText={nameHelpMessage}
                   autoFocus
                   fullWidth
                   required
@@ -73,7 +184,12 @@ class AddToddlerTab extends React.Component {
               </Grid>
             </Grid>
 
-            <Grid spacing={16} container alignItems="flex-end">
+            <Grid
+              spacing={16}
+              style={{ paddingTop: "12px", paddingBottom: "8px" }}
+              container
+              alignItems="center"
+            >
               <Grid item xs={1}>
                 <Icon path={mdiCalendar} />
               </Grid>
@@ -82,10 +198,12 @@ class AddToddlerTab extends React.Component {
                   label="Date of birth"
                   format="MM/dd/yyyy"
                   openTo="year"
+                  variant="filled"
                   value={selectedDate}
                   onChange={this.handleDateChange}
                   views={["year", "month", "day"]}
                   placeholder="MM/dd/yyyy"
+                  helperText="Click on this field to start selecting your date"
                   mask={value =>
                     // handle clearing outside if value can be changed outside of the component
                     value
@@ -107,12 +225,11 @@ class AddToddlerTab extends React.Component {
                   disableFuture
                   fullWidth
                   required
-                  keyboard
                 />
               </Grid>
             </Grid>
 
-            <Grid spacing={16} container alignItems="flex-end">
+            <Grid spacing={16} container alignItems="center">
               <Grid item xs={1}>
                 <Icon path={mdiPill} />
               </Grid>
@@ -121,15 +238,25 @@ class AddToddlerTab extends React.Component {
                   name="medication"
                   label="Enter Medications Taken"
                   margin="normal"
+                  variant="filled"
                   value={medications}
                   onChange={this.handleMedicationsChange}
+                  onFocus={this.handleMedicationFocus}
+                  onBlur={this.handleMedicationBlur}
+                  error={
+                    !medicationsValid &&
+                    medications.length === 0 &&
+                    !medicationFocus &&
+                    !medicationFirstShow
+                  }
+                  helperText={medicationHelpMessage}
                   fullWidth
                   required
                 />
               </Grid>
             </Grid>
 
-            <Grid spacing={16} container alignItems="flex-end">
+            <Grid spacing={16} container alignItems="center">
               <Grid item xs={1}>
                 <Icon path={mdiClipboardPulse} />
               </Grid>
@@ -138,8 +265,18 @@ class AddToddlerTab extends React.Component {
                   name="medication"
                   label="Enter Medications Taken"
                   margin="normal"
+                  variant="filled"
                   value={healthConcerns}
                   onChange={this.handleHealthConcerns}
+                  onFocus={this.handleHealthConcernsFocus}
+                  onBlur={this.handleHealthConcernsBlur}
+                  error={
+                    !healthConcernsValid &&
+                    healthConcerns.length === 0 &&
+                    !healthConcernsFocus &&
+                    !healthConcernsFirstShow
+                  }
+                  helperText={healthConcernsHelpMessage}
                   fullWidth
                   required
                 />

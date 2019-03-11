@@ -5,13 +5,18 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import withStyles from "@material-ui/core/styles/withStyles";
-import { Timeline, Search, Settings } from "@material-ui/icons";
+import { Timeline, Search, Settings, ExitToApp } from "@material-ui/icons";
 
 import styles from "./Styles";
 
 class NavBar extends React.Component {
   render() {
-    const { classes, handleCurrentPageChange, revealIcons } = this.props;
+    const {
+      classes,
+      handleCurrentPageChange,
+      revealIcons,
+      handleSignout
+    } = this.props;
     return (
       <div>
         <AppBar position="static" color="primary">
@@ -47,6 +52,12 @@ class NavBar extends React.Component {
                     onClick={handleCurrentPageChange("Settings")}
                   >
                     <Settings />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Sign Out">
+                  <IconButton color="inherit" onClick={handleSignout}>
+                    <ExitToApp />
                   </IconButton>
                 </Tooltip>
               </div>
